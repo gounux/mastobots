@@ -28,16 +28,7 @@ class SuperBotBeing(ABC):
         self.config = config
 
     def __repr__(self) -> str:
-        return f"<{self.__class__.__name__} (power: {self.power()})>"
-
-    @abstractmethod
-    def power(self) -> str:
-        """
-        Gives a simple string declaring the bot's power
-        Used as a key to parse YAML configuration file
-        :return: bot's power
-        """
-        pass
+        return f"<{self.__class__.__name__}>"
 
     @abstractmethod
     def action(self, action: str = "default") -> None:
