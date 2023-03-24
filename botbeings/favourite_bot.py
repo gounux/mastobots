@@ -5,7 +5,7 @@ class FavouriteBotBeing(SuperBotBeing):
     def power(self) -> str:
         return "favourite"
 
-    def action(self) -> None:
+    def action(self, action: str = "default") -> None:
         timeline = self.mastodon.timeline_public(limit=self.fetch_timeline_limit)
         for toot in timeline:
             if not self.can_interact_with_toot(toot):

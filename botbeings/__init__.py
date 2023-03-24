@@ -38,10 +38,11 @@ class SuperBotBeing(ABC):
         pass
 
     @abstractmethod
-    def action(self) -> None:
+    def action(self, action: str = "default") -> None:
         """
         Run bot's action: this is teh main function that perform's bot's power
-        :return: nothing
+        :param action: bot's action to trigger
+        :return: nothing but a G thang
         """
         # run actions
         pass

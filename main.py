@@ -29,6 +29,7 @@ def arguments() -> Namespace:
     parser = ArgumentParser(description="BotBeings superpower trigger")
     parser.add_argument("power", help=f"Power of the botbeing to invoke (available: {','.join(available_bots.keys())})")
     parser.add_argument("config", help="Config file to use (path to the YAML file)")
+    parser.add_argument("-a", "--action", default="default", help="Bot's action to trigger")
     parser.add_argument("-v", "--verbose", action="store_true", default=False, help="Verbose output")
     return parser.parse_args()
 
@@ -49,6 +50,6 @@ if __name__ == "__main__":
             logging.info(f"Creating botbeing with power '{args.power}'")
             bot = bots_factory(args.power, config["bots"])
             logging.info(f"Invoking action of bot {bot}")
-            bot.action()
+            bot.action(args.action)
         except MastodonError as e:
             logging.error(e)
