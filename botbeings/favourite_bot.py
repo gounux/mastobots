@@ -2,9 +2,6 @@ from botbeings import SuperBotBeing
 
 
 class FavouriteBotBeing(SuperBotBeing):
-    def power(self) -> str:
-        return "favourite"
-
     def action(self, action: str = "default") -> None:
         # fetch some toots
         timeline = self.mastodon.timeline_public(limit=self.fetch_timeline_limit)
