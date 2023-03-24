@@ -42,12 +42,12 @@ if __name__ == "__main__":
         for h in logger.handlers:
             h.setLevel(logging.DEBUG)
 
-    logging.info(f"Parsing bots configuration YAML file at {args.config}")
+    logging.debug(f"Parsing bots configuration YAML file at {args.config}")
     with open(args.config) as f:
         config = yaml.load(f, Loader=SafeLoader)
 
         try:
-            logging.info(f"Creating botbeing with power '{args.power}'")
+            logging.debug(f"Creating botbeing with power '{args.power}'")
             bot = bots_factory(args.power, config["bots"])
             logging.info(f"Invoking '{args.action}' action of bot {bot}")
             bot.action(args.action)
