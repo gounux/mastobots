@@ -1,3 +1,4 @@
+import logging
 from abc import ABC, abstractmethod
 from typing import Any, Dict
 
@@ -17,6 +18,7 @@ class SuperBotBeing(ABC):
     interact_with_bots: bool
     fetch_timeline_limit: int
     config: Dict[str, Any]
+    logger = logging.getLogger()
 
     def __init__(self, config: Dict[str, Any]):
         self.mastodon = Mastodon(**config.get("api"))
