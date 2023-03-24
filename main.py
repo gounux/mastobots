@@ -15,7 +15,7 @@ logger.setLevel(logging.INFO)
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.INFO)
 formatter = colorlog.ColoredFormatter(
-    "%(yellow)s%(asctime)s %(log_color)s[%(levelname)s]%(reset)s %(purple)s[%(name)s]%(reset)s %(message)s"
+    "%(yellow)s%(asctime)s %(log_color)s[%(levelname)s]%(reset)s %(purple)s[%(name)s %(module)s]%(reset)s %(message)s"
 )
 handler.setFormatter(formatter)
 logger.addHandler(handler)
@@ -49,7 +49,7 @@ if __name__ == "__main__":
         try:
             logging.info(f"Creating botbeing with power '{args.power}'")
             bot = bots_factory(args.power, config["bots"])
-            logging.info(f"Invoking action of bot {bot}")
+            logging.info(f"Invoking '{args.action}' action of bot {bot}")
             bot.action(args.action)
         except MastodonError as e:
             logging.error(e)
