@@ -1,15 +1,17 @@
-from typing import Any, Dict
+from typing import Any, Dict, Mapping, Type
 
 from botbeings import SuperBotBeing
 from botbeings.boost_bot import BoostBotBeing
 from botbeings.favourite_bot import FavouriteBotBeing
+from botbeings.follow_bot import FollowBotBeing
 
-available_bots = {
+available_bots: Mapping[str, Type[SuperBotBeing]] = {
     "favourite": FavouriteBotBeing,
     "boost": BoostBotBeing,
+    "follow": FollowBotBeing,
 }
 
 
-def bots_factory(power: str, configs: Dict[str, Any]) -> SuperBotBeing:
+def bots_factory(power: str, configs: Dict[str, Dict[str, Any]]) -> SuperBotBeing:
     config = configs[power]
     return available_bots[power](config)

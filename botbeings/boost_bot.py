@@ -2,7 +2,7 @@ from botbeings import SuperBotBeing
 
 
 class BoostBotBeing(SuperBotBeing):
-    def action(self, action: str = "default") -> None:
+    def run(self, action: str = "default") -> None:
         # fetch some toots
         timeline = self.mastodon.timeline_public(limit=self.fetch_timeline_limit)
 
