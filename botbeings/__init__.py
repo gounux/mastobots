@@ -1,10 +1,10 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 from mastodon import Mastodon
 
-TIMELINE_LIMIT = 20
+TIMELINE_LIMIT = 100
 
 
 class SuperBotBeing(ABC):
@@ -19,7 +19,6 @@ class SuperBotBeing(ABC):
     fetch_timeline_limit: int
     config: Dict[str, Any]
     logger = logging.getLogger()
-    me: Dict[str, Any]
 
     def __init__(self, config: Dict[str, Any]):
         self.mastodon = Mastodon(**config.get("api"))
@@ -27,39 +26,38 @@ class SuperBotBeing(ABC):
         self.interact_with_bots = config.get("interact_with_bots", True)
         self.fetch_timeline_limit = config.get("fetch_timeline_limit", TIMELINE_LIMIT)
         self.config = config
-        # fetch bot's id (to avoid following it)
         self.me = self.mastodon.me()
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__}>"
 
     @abstractmethod
-    def action(self, action: str = "default") -> None:
+    def run(self, action: str = "default") -> None:
         """
-        Run bot's action: this is teh main function that perform's bot's power
+        run bot's action: this is teh main function that performs bot's power
         :param action: bot's action to trigger
         :return: nothing but a G thang
         """
         # run actions
         pass
 
-    def can_interact_with_user(self, user: Union[dict, Any]) -> bool:
+    def can_interact_with_user(self, user) -> bool:
         """
-        # check if the bot can interact with a user, based on bot's config
-        :param user: Dict representation of a mastodon user, using API format:
+        checks if the bot can interact with a user, based on bot's config
+        :param user: representation of a mastodon user, using API format:
         https://mastodonpy.readthedocs.io/en/stable/02_return_values.html#user-account-dicts
         :return: True if the bot can interact with the provided user
         """
         assert "bot" in user
-        bot_user = user["bot"]
+        bot_user = user.bot
         return (self.interact_with_human and not bot_user) or (self.interact_with_bots and bot_user)
 
-    def can_interact_with_toot(self, toot: Union[dict, Any]) -> bool:
+    def can_interact_with_toot(self, toot) -> bool:
         """
-        # check if the bot can interact with a toot, based on toot's author and bot's config
-        :param toot: Dict representation of a mastodon toot, using API format:
+        checks if the bot can interact with a toot, based on toot's author and bot's config
+        :param toot: representation of a mastodon toot, using API format:
         https://mastodonpy.readthedocs.io/en/stable/02_return_values.html#status-dicts
         :return: True if the bot can interact with the provided toot
         """
         assert "account" in toot
-        return self.can_interact_with_user(toot["account"])
+        return self.can_interact_with_user(toot.account)
