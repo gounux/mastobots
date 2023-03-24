@@ -1,0 +1,14 @@
+bots:
+
+    # Favourite Bot Being
+    favourite:
+        # Mastodon API connection settings
+        api:
+            api_base_url: https://mastodon.instance/
+            access_token: secret_access_token
+        # if the bot should interact with humans and related toots (default: false)
+        interact_with_humans: false
+        # if the bot should interact with bots and related toots (default: true)
+        interact_with_bots: true
+        # how many toots should be asked to mastodon API when fetching timeline (default: 20)
+        fetch_timeline_limit: 300
