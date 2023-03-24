@@ -1,6 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Dict
+from typing import Any, Dict, Union
 
 from mastodon import Mastodon
 
@@ -43,7 +43,7 @@ class SuperBotBeing(ABC):
         # run actions
         pass
 
-    def can_interact_with_user(self, user: Dict[str, Any]) -> bool:
+    def can_interact_with_user(self, user: Union[dict, Any]) -> bool:
         """
         # check if the bot can interact with a user, based on bot's config
         :param user: Dict representation of a mastodon user, using API format:
@@ -54,7 +54,7 @@ class SuperBotBeing(ABC):
         bot_user = user["bot"]
         return (self.interact_with_human and not bot_user) or (self.interact_with_bots and bot_user)
 
-    def can_interact_with_toot(self, toot: Dict[str, Any]) -> bool:
+    def can_interact_with_toot(self, toot: Union[dict, Any]) -> bool:
         """
         # check if the bot can interact with a toot, based on toot's author and bot's config
         :param toot: Dict representation of a mastodon toot, using API format:
