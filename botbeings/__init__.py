@@ -19,6 +19,7 @@ class SuperBotBeing(ABC):
     fetch_timeline_limit: int
     config: Dict[str, Any]
     logger = logging.getLogger()
+    me: Dict[str, Any]
 
     def __init__(self, config: Dict[str, Any]):
         self.mastodon = Mastodon(**config.get("api"))
@@ -26,6 +27,8 @@ class SuperBotBeing(ABC):
         self.interact_with_bots = config.get("interact_with_bots", True)
         self.fetch_timeline_limit = config.get("fetch_timeline_limit", TIMELINE_LIMIT)
         self.config = config
+        # fetch bot's id (to avoid following it)
+        self.me = self.mastodon.me()
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__}>"
@@ -40,13 +43,23 @@ class SuperBotBeing(ABC):
         # run actions
         pass
 
+    def can_interact_with_user(self, user: Dict[str, Any]) -> bool:
+        """
+        # check if the bot can interact with a user, based on bot's config
+        :param user: Dict representation of a mastodon user, using API format:
+        https://mastodonpy.readthedocs.io/en/stable/02_return_values.html#user-account-dicts
+        :return: True if the bot can interact with the provided user
+        """
+        assert "bot" in user
+        bot_user = user["bot"]
+        return (self.interact_with_human and not bot_user) or (self.interact_with_bots and bot_user)
+
     def can_interact_with_toot(self, toot: Dict[str, Any]) -> bool:
         """
         # check if the bot can interact with a toot, based on toot's author and bot's config
         :param toot: Dict representation of a mastodon toot, using API format:
         https://mastodonpy.readthedocs.io/en/stable/02_return_values.html#status-dicts
-        :return: True if the bot can interract with the provided toot
+        :return: True if the bot can interact with the provided toot
         """
-
-        bot_user = toot["account"]["bot"]
-        return (self.interact_with_human and not bot_user) or (self.interact_with_bots and bot_user)
+        assert "account" in toot
+        return self.can_interact_with_user(toot["account"])
