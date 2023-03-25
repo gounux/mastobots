@@ -1,6 +1,7 @@
 from typing import Any, Dict, Mapping, Type
 
 from botbeings import SuperBotBeing
+from botbeings.blagues_bot import BlaguesBotBeing
 from botbeings.boost_bot import BoostBotBeing
 from botbeings.favourite_bot import FavouriteBotBeing
 from botbeings.follow_bot import FollowBotBeing
@@ -12,6 +13,7 @@ available_bots: Mapping[str, Type[SuperBotBeing]] = {
     "boost": BoostBotBeing,
     "follow": FollowBotBeing,
     "quote": QuoteBotBeing,
+    "blague": BlaguesBotBeing,
     "tonimastodoni": ToniMastodoni,
 }
 
