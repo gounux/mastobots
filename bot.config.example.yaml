@@ -11,7 +11,7 @@ bots:
         # if the bot should interact with bots and related toots (default: true)
         interact_with_bots: true
         # how many toots should be asked to mastodon API when fetching timeline (default: 20)
-        fetch_timeline_limit: 200
+        fetch_timeline_limit: 20
 
     # Boost Bot Being
     boost:
@@ -24,7 +24,7 @@ bots:
         # if the bot should interact with bots and related toots (default: true)
         interact_with_bots: true
         # how many toots should be asked to mastodon API when fetching timeline (default: 20)
-        fetch_timeline_limit: 200
+        fetch_timeline_limit: 20
 
     # Follow Bot Being
     follow:
@@ -37,5 +37,14 @@ bots:
         # if the bot should interact with bots and related toots (default: true)
         interact_with_bots: true
         # how many toots should be asked to mastodon API when fetching timeline (default: 20)
-        fetch_timeline_limit: 100
-        fetch_followers_limit: 100
+        fetch_timeline_limit: 20
+        fetch_followers_limit: 20
+
+    # Toni Mastodoni
+    tonimastodoni:
+        # Mastodon API connection settings
+        api:
+            api_base_url: https://mastodon.instance/
+            access_token: secret_access_token
+        # how many toots should be asked to mastodon API when fetching timeline (default: 20)
+        fetch_timeline_limit: 20
