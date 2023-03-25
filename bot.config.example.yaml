@@ -40,6 +40,13 @@ bots:
         fetch_timeline_limit: 20
         fetch_followers_limit: 20
 
+    # Quote Bot Being
+    quote:
+        # Mastodon API connection settings
+        api:
+            api_base_url: https://mastodon.instance/
+            access_token: secret_access_token
+
     # Toni Mastodoni
     tonimastodoni:
         # Mastodon API connection settings

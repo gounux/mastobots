@@ -25,3 +25,4 @@ repos:
           - --ignore-missing-imports
         additional_dependencies:
           - types-pyyaml
+          - types-requests
