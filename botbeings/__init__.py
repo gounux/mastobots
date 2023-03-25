@@ -50,7 +50,9 @@ class SuperBotBeing(ABC):
         """
         assert "bot" in user
         bot_user = user.bot
-        return (self.interact_with_human and not bot_user) or (self.interact_with_bots and bot_user)
+        return (self.interact_with_human and not bot_user) or (
+            self.interact_with_bots and bot_user
+        )
 
     def can_interact_with_toot(self, toot) -> bool:
         """

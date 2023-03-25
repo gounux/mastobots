@@ -27,10 +27,17 @@ def arguments() -> Namespace:
     :return: Namespace for CLI arg's definition
     """
     parser = ArgumentParser(description="BotBeings power trigger")
-    parser.add_argument("power", help=f"Power of the botbeing to run (available: {','.join(available_bots.keys())})")
+    parser.add_argument(
+        "power",
+        help=f"Power of the botbeing to run (available: {','.join(available_bots.keys())})",
+    )
     parser.add_argument("config", help="Config file to use (path to the YAML file)")
-    parser.add_argument("-a", "--action", default="default", help="Bot's action to trigger")
-    parser.add_argument("-v", "--verbose", action="store_true", default=False, help="Verbose output")
+    parser.add_argument(
+        "-a", "--action", default="default", help="Bot's action to trigger"
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", default=False, help="Verbose output"
+    )
     return parser.parse_args()
 
 
