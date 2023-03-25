@@ -54,11 +54,11 @@ poetry run python mastobots.py [POWER] bot.config.yaml
 Create local docker image:
 
 ```bash
-docker build -t mastobots:latest .
+docker build -t mastobots:$(poetry version --short) -t mastobots:latest .
 ```
 
 Run local docker image:
 
 ```bash
-docker run mastobots [POWER] bot.config.yaml
+docker run mastobots:latest [POWER] bot.config.yaml
 ```
