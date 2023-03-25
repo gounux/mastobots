@@ -4,7 +4,7 @@ from typing import Any, Dict
 
 from mastodon import Mastodon
 
-TIMELINE_LIMIT = 100
+TIMELINE_LIMIT = 20
 
 
 class SuperBotBeing(ABC):
