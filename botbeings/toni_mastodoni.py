@@ -151,7 +151,8 @@ ENDS = [
     "You, you fucking piece of shit !",
     "Yeah, yeah, yeah, come on, come on !",
     "Come an.",
-    "Don't be a prick, {name}",
+    "Fack it, lets' go.",
+    "Don't be a prick, {name}.",
     "That fake old tough guy !",
 ]
 
@@ -184,5 +185,5 @@ class ToniMastodoni(SuperBotBeing):
             f"Generating toot with {nb_questions} questions and {nb_affirmations} affirmations"
         )
         toot = self.generate_toot(recipient, nb_questions, nb_affirmations)
-        # self.mastodon.status_post(toot)
+        self.mastodon.status_post(toot)
         self.logger.info(f'Toot posted: "{toot}" (length: {len(toot)})')
