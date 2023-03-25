@@ -19,7 +19,9 @@ class FollowBotBeing(SuperBotBeing):
 
             user = toot.account
             self.follow_user(user)
-            followers = self.mastodon.account_followers(user, limit=self.config.get("fetch_followers_limit"))
+            followers = self.mastodon.account_followers(
+                user, limit=self.config.get("fetch_followers_limit")
+            )
             for follower in followers:
                 if follower.id == self.me.id:
                     continue
