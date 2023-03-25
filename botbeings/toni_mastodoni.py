@@ -162,15 +162,14 @@ class ToniMastodoni(SuperBotBeing):
         if action == "default":
             self.toot()
 
-    def generate_toot(
-        self, recipient: str, nb_questions: int, nb_affirmations: int
-    ) -> str:
+    @staticmethod
+    def generate_toot(recipient: str, nbq: int, nba: int) -> str:
         if recipient in RECIPIENTS:
             RECIPIENTS.remove(recipient)
         mobster = random.choice(RECIPIENTS)
         apostrophe = random.choice(APOSTROPHES)
-        questions = random.choices(QUESTIONS, k=nb_questions)
-        affirmations = random.choices(AFFIRMATIONS, k=nb_affirmations)
+        questions = random.choices(QUESTIONS, k=nbq)
+        affirmations = random.choices(AFFIRMATIONS, k=nba)
         end = random.choice(ENDS)
         content = f"{apostrophe} {' '.join(questions)} {' '.join(affirmations)} {end}"
         return content.format(name=recipient, mobster=mobster)
