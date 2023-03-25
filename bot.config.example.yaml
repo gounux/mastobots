@@ -47,6 +47,21 @@ bots:
             api_base_url: https://mastodon.instance/
             access_token: secret_access_token
 
+    # Blagues Bot Being
+    blague:
+        # Mastodon API connection settings
+        api:
+            api_base_url: https://mastodon.instance/
+            access_token: secret_access_token
+        # BlaguesAPI connection settings (see https://www.blagues-api.fr/)
+        blaguesapi:
+            access_token: secret_access_token
+            excluded_categories:
+                - dark
+                - limit
+                - beauf
+                - blondes
+
     # Toni Mastodoni
     tonimastodoni:
         # Mastodon API connection settings
