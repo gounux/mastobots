@@ -23,6 +23,7 @@ APOSTROPHES = [
     "You know, {name}.",
     "You hear what I said, {name} ?",
     "Listen to your friend here, {name}.",
+    "Listen to me {name}, will ya ?",
     "What did ya say {name} ?",
     "What's the fuckin' matter wit ya, {name} ?",
     "Come on {name}.",
@@ -34,7 +35,7 @@ APOSTROPHES = [
     "Hey, {name}, hurry up, will ya ?",
     "I'll make this short and sweet, {name}.",
     "Well {name}, I've been busy.",
-    "Yeah {name}, you were always fuckin' late.",
+    "Yeah {name}, you're always fuckin' late.",
     "No more shines, {name}.",
     "Relax {name}, will ya ?",
     "I wanna tell ya one thing, {name}",
@@ -78,6 +79,7 @@ QUESTIONS = [
     "What happened to Gary Cooper ? The strong silent type.",
     "You havin' a good time ?",
     "What is it ? A big fuckin' deal ?",
+    "Who the fack told you that ?",
 ]
 
 AFFIRMATIONS = [
@@ -128,7 +130,7 @@ ENDS = [
     "I got to admit the truth.",
     "You can’t fuckin' do this like this !",
     "Say hello to my little friend !",
-    "I’m gonna go get the papers.",
+    "Fack it. I’m gonna go get the papers.",
     "I’m an average nobody.",
     "Show the respect, will ya ?",
     "Come on. Let's go, come an.",
@@ -159,7 +161,7 @@ ENDS = [
     "Fack it, let's go.",
     "Don't be a prick, {name}.",
     "That fake old tough guy !",
-    "Let's have a talk with {lobster}, tanight.",
+    "Let's have a talk with {lobster}, tonight.",
 ]
 
 
