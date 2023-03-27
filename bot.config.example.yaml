@@ -70,3 +70,10 @@ bots:
             access_token: secret_access_token
         # how many toots should be asked to mastodon API when fetching timeline (default: 20)
         fetch_timeline_limit: 20
+
+    # Jobs Bot Being (DinkedIn Jobs)
+    job:
+        # Mastodon API connection settings
+        api:
+            api_base_url: https://mastodon.instance/
+            access_token: secret_access_token
