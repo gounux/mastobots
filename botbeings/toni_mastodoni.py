@@ -176,8 +176,8 @@ class ToniMastodoni(SuperBotBeing):
             RECIPIENTS.remove(recipient)
         mobster = random.choice(RECIPIENTS)
         apostrophe = random.choice(APOSTROPHES)
-        questions = random.choices(QUESTIONS, k=nbq)
-        affirmations = random.choices(AFFIRMATIONS, k=nba)
+        questions = random.sample(QUESTIONS, k=nbq)
+        affirmations = random.sample(AFFIRMATIONS, k=nba)
         end = random.choice(ENDS)
         content = f"{apostrophe} {' '.join(questions)} {' '.join(affirmations)} {end}"
         return content.format(name=recipient, mobster=mobster)
