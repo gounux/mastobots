@@ -26,6 +26,7 @@ COMPANY_A = [
     "Keystone",
     "Müller&Müller",
     "Dupond&Dupond",
+    "London",
 ]
 
 COMPANY_B = [
@@ -327,11 +328,13 @@ MISSION_ADJECTIVES = [
     "agile",
     "alternative",
     "an expanded array of",
+    "assertive",
     "B2B",
     "B2C",
     "backend",
     "backward-compatible",
     "best-of-breed",
+    "bijective",
     "bleeding-edge",
     "bricks-and-clicks",
     "business",
@@ -402,9 +405,12 @@ MISSION_ADJECTIVES = [
     "high-quality",
     "highly efficient",
     "holistic",
+    "human centered",
+    "human focused",
     "impactful",
     "inexpensive",
     "innovative",
+    "insightful",
     "installed base",
     "integrated",
     "interactive",
@@ -413,7 +419,10 @@ MISSION_ADJECTIVES = [
     "interoperable",
     "intuitive",
     "just in time",
+    "key",
+    "lead",
     "leading-edge",
+    "lean",
     "leveraged",
     "long-term high-impact",
     "low-risk high-yield",
@@ -488,12 +497,14 @@ MISSION_ADJECTIVES = [
 MISSION_NOUNS = [
     "action items",
     "adoption",
+    "AI",
     "alignments",
     "applications",
     "architectures",
     "bandwidth",
     "benefits",
     "best practices",
+    "blockchain",
     "catalysts for change",
     "channels",
     "clouds",
@@ -508,6 +519,7 @@ MISSION_NOUNS = [
     "e-business",
     "e-commerce",
     "e-markets",
+    "e-platforms",
     "e-tailers",
     "e-services",
     "experiences",
@@ -523,9 +535,11 @@ MISSION_NOUNS = [
     "infrastructures",
     "initiatives",
     "innovation",
+    "inputs",
     "intellectual capital",
     "interfaces",
     "internal or 'organic' sources",
+    "KPI",
     "leadership",
     "leadership skills",
     "manufactured products",
@@ -542,6 +556,7 @@ MISSION_NOUNS = [
     "niche markets",
     "nosql",
     "opportunities",
+    "outputs",
     "'outside the box' thinking",
     "outsourcing",
     "paradigms",
@@ -587,31 +602,74 @@ TOOLS = [
     "Dildows",
     "MS Office 1664",
     "MS Office 420",
+    "MS Office Processional",
     "MS PowpowPoint",
     "MS Axcel",
     "MS Weird",
     "MS Excess",
     "MS Meats",
+    "MS Visual Ouzo",
     "CanetteVa",
+    "CanetteVa Flatform",
+    "CanetteVa Floud",
     "Adaube OutDesign",
     "Adaube Filloustrator",
     "Adaube Creative Floud",
+    "Adaube Processional",
     "Trellol",
-    "Kenjins",
     "Failsforce",
+    "Failsforce Flatform",
+    "Failsforce MyKarting Cloud",
+    "Failsforce Data MyKarting",
+    "Failsforce Floud Processional",
+    "Failsforce Lightning Floud",
+    "Failsforce Productivity Floud",
     "SPA",
     "Slakatack",
     "PrordWess",
     "Gogole",
+    "Gogole Flatform",
+    "Gogole Floud",
+    "Gogole for Processionals",
     "Azamone Zeb Vertices",
-    "Pas Sage",
+    "Azamone Zeb Vertices Flatform",
+    "Azamone Zeb Vertices Floud",
+    "Azamone Zeb Vertices Karting Services",
+    "PasSage",
     "J'ira",
-    "HitGub",
-    "LitGab",
+    "J'ira Flatform",
+    "J'ira Offline Floud",
+    "J'ira Processional MyKarting",
     "ZoomZoomZen",
+    "ZoomZoomZen Processional",
+    "Jean-Marc GIS",
+    "Jean-Marc GIS Flatform",
+    "Jean-Marc GIS Floud",
+    "Jean-Marc GIS KartingPlace",
+    "Jean-Marc GIS Tata Science",
+    "Jean-Marc GIS Offline Cloud",
 ]
 
-TOOT_TEMPLATE = """📢 {initials} ({company}) {action} {jobtitle} ! 📢
+MAIL_USERS = [
+    "jobs",
+    "careers",
+    "sourcing",
+    "hiring",
+    "recruitments",
+]
+
+MAIL_DOMAINS = [
+    "com",
+    "business",
+    "mgmt",
+    "insights",
+    "strat",
+    "bs",
+    "shop",
+    "in",
+]
+
+TOOT_TEMPLATE = """📢 {initials} ({company}) {action} {jobtitle} !
 
 👉 Your missions:
 
@@ -624,7 +682,7 @@ TOOT_TEMPLATE = """📢 {initials} ({company}) {action} {jobtitle} ! 📢
 🙋 {qualities}
 💻 {tools}
 
-👉 ✉️ jobs@{domain}.com
+👉 ✉️ {mailuser}@{domain}.{maildomain}
 
 #jobs #career"""
 
@@ -648,12 +706,12 @@ class JobsBotBeing(SuperBotBeing):
             mission_2=self.generate_mission(),
             mission_3=self.generate_mission(),
             mission_4=self.generate_mission(),
-            xp=random.choice(["3+", "5+", "8+", "10+", "12+", "25+"]),
+            xp=random.choice(["3+", "5+", "8+", "25+"]),
             qualities=", ".join(random.sample(MISSION_ADJECTIVES, k=4)),
             tools=", ".join(random.sample(TOOLS, k=4)),
-            salary=random.randint(16, 24),
-            phone=random.randint(1000000000, 10000000000),
+            mailuser=random.choice(MAIL_USERS),
             domain=initials.lower().replace(" ", "-"),
+            maildomain=random.choice(MAIL_DOMAINS),
         )
 
     @staticmethod
