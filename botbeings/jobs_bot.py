@@ -3,6 +3,8 @@ from typing import Tuple
 
 from botbeings import SuperBotBeing
 
+MAX_TOOT_LENGTH = 500
+
 ACTIONS = [
     "is looking for a new",
     "is hiring a new",
@@ -132,6 +134,7 @@ JOBTITLE_B = [
     "Usability",
     "Metrics",
     "Team",
+    "Transformation",
 ]
 
 JOBTITLE_C = [
@@ -161,25 +164,6 @@ JOBTITLE_C = [
     "Agent",
     "Representative",
     "Strategist",
-]
-
-MISSIONS = [
-    "synergistically reinvent premium benefits",
-    "compellingly incept premium wins",
-    "globally maintain adaptive networks",
-    "uniquely seize market-driven wins",
-    "proactively whiteboard agile solutions",
-    "proactively whiteboard agile solutions",
-    "interactively expedite cutting-edge niches",
-    "monotonectally synthesize orthogonal architectures",
-    "competently grow inexpensive sprints",
-    "phosfluorescently utilize go forward opportunities",
-    "rapidiously streamline performance based services",
-    "uniquely visualize cross-unit wins",
-    "collaboratively fabricate diverse ideas",
-    "intrinsically develop enabled solutions",
-    "compellingly fashion viral results",
-    "monotonectally cultivate ubiquitous catalysts for change",
 ]
 
 MISSION_ADVERBS = [
@@ -690,6 +674,8 @@ TOOT_TEMPLATE = """📢 {initials} ({company}) {action} {jobtitle} !
 class JobsBotBeing(SuperBotBeing):
     def run(self, action: str = "default") -> None:
         toot = self.generate_toot()
+        while len(toot) > MAX_TOOT_LENGTH:
+            toot = self.generate_toot()
         self.mastodon.status_post(toot)
         self.logger.info(f'Tooted: "{toot}" (length: {len(toot)})')
 

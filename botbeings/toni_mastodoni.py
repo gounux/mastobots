@@ -3,6 +3,8 @@ from random import randint
 
 from botbeings import SuperBotBeing
 
+MAX_TOOT_LENGTH = 500
+
 RECIPIENTS = [
     "Jimmy",
     "Paulie",
@@ -192,5 +194,7 @@ class ToniMastodoni(SuperBotBeing):
             f"Generating toot with {nb_questions} questions and {nb_affirmations} affirmations"
         )
         toot = self.generate_toot(recipient, nb_questions, nb_affirmations)
+        while len(toot) >= MAX_TOOT_LENGTH:
+            toot = self.generate_toot(recipient, nb_questions, nb_affirmations)
         self.mastodon.status_post(toot)
         self.logger.info(f'Tooted: "{toot}" (length: {len(toot)})')
