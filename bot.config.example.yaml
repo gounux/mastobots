@@ -77,3 +77,10 @@ bots:
         api:
             api_base_url: https://mastodon.instance/
             access_token: secret_access_token
+
+    # Pataphysique Bot Being (Orthographe d'apparat)
+    pataphysics:
+        # Mastodon API connection settings
+        api:
+            api_base_url: https://mastodon.instance/
+            access_token: secret_access_token
