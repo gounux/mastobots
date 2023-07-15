@@ -1,14 +1,16 @@
 import logging
 import random
-from typing import Tuple
+from typing import Callable, Tuple
 
 import lirecouleur.text as lt
 import wikiquote
+from mastodon import Mastodon, StreamListener
 from wikiquote.constants import DEFAULT_MAX_QUOTES
 
 from botbeings import SuperBotBeing
 from botbeings.jobs_bot import MAX_TOOT_LENGTH
 
+LOGGER = logging.getLogger()
 DEFAULT_LANGUAGE = "fr"
 
 # orthographe d'apparat phonems implementation
@@ -94,23 +96,116 @@ OA_PHONEMS = {
 }
 
 
+def encode_orthographe_d_apparat(text: str) -> str:
+    oa, processed = "", ""
+    phonems = lt.phonemes(text)
+    for word in phonems:
+        if isinstance(word, str):
+            LOGGER.debug(f"Word is not a string and not a list of phonems: '{word}')")
+            oa += word
+            processed += word
+            continue
+        LOGGER.debug(f"word: {word}")
+        for ph, char in word:
+            LOGGER.debug(f"Processing phonem '{ph}' for '{char}'")
+            if char in ["'"]:
+                oa += " "
+                processed += char
+                continue
+            oa_ph = OA_PHONEMS[ph].title() if char[0].isupper() else OA_PHONEMS[ph]
+            oa += oa_ph
+            processed += char
+            LOGGER.debug(
+                f"Phonem '{ph}' ('{char}') -> '{oa_ph}' (processed: '{processed}')"
+            )
+    return oa
+
+
+def generate_oa_random_quote_toot() -> Tuple[str, str, str, str]:
+    quote, title = random_quote()
+    encoded = encode_orthographe_d_apparat(quote)
+    toot = f"""💡 \"{encoded}\"
+
+({title})"""
+    return title, quote, encoded, toot
+
+
+# region fetch quotes
+
+
+def quote_of_the_day(lang: str = DEFAULT_LANGUAGE) -> str:
+    return wikiquote.qotd(lang=lang)
+
+
+def random_quote_from(
+    title: str, max_quotes: int = DEFAULT_MAX_QUOTES, lang: str = DEFAULT_LANGUAGE
+) -> str:
+    quotes = wikiquote.quotes(title, max_quotes=max_quotes, lang=lang)
+    return random.choice(quotes)
+
+
+def random_quote(
+    max: int = DEFAULT_MAX_QUOTES, lang: str = DEFAULT_LANGUAGE
+) -> Tuple[str, str]:
+    titles = wikiquote.random_titles(max_titles=max, lang=lang)
+    if len(titles) == 0:
+        return random_quote(max, lang)
+    title = random.choice(titles)
+    quotes = wikiquote.quotes(title, max_quotes=max, lang=lang)
+    if len(quotes) == 0:
+        return random_quote(max, lang)
+    return random.choice(quotes), title
+
+
+# endregion
+
+
+class PataphysicsStreamListener(StreamListener):
+    def __init__(
+        self,
+        mastodon: Mastodon,
+        encoder: Callable[[str], str] = encode_orthographe_d_apparat,
+        quote_fetcher: Callable[[int, str], Tuple[str, str]] = random_quote,
+    ):
+        self.mastodon = mastodon
+        self.encoder = encoder
+        self.quote_fetcher = quote_fetcher
+
+    def on_update(self, status) -> None:
+        sender = status.account
+        LOGGER.info(f"Toot update from '{sender.acct}': '{status.content}'")
+
+        _, quote, _, toot = generate_oa_random_quote_toot()
+        while len(toot) >= MAX_TOOT_LENGTH or len(quote) >= MAX_TOOT_LENGTH - 4:
+            _, quote, _, toot = generate_oa_random_quote_toot()
+
+        reply_toot = self.mastodon.status_post(toot, in_reply_to_id=status.id)
+        self.mastodon.status_post(f'👉 "{quote}"', in_reply_to_id=reply_toot.id)
+
+
 class PataphysicsBotBeing(SuperBotBeing):
     def run(self, action: str = "default") -> None:
         if action == "oa_quote":
             # fetch a quote from wikiquote, encode it into orthographe d'apparat, toot it and reply with original
-            title, quote, oa, toot = self.generate_oa_random_quote_toot()
-            while len(toot) >= MAX_TOOT_LENGTH or len(quote) >= MAX_TOOT_LENGTH - 2:
-                title, quote, oa, toot = self.generate_oa_random_quote_toot()
+            title, quote, oa, toot = generate_oa_random_quote_toot()
+            while len(toot) >= MAX_TOOT_LENGTH or len(quote) >= MAX_TOOT_LENGTH - 4:
+                title, quote, oa, toot = generate_oa_random_quote_toot()
             oa_toot = self.mastodon.status_post(toot)
             self.logger.info(f'Tooted: "{oa}" ({title}, toot length: {len(toot)})')
-            self.mastodon.status_post(f'"{quote}"', in_reply_to_id=oa_toot["id"])
+            self.mastodon.status_post(f'👉 "{quote}"', in_reply_to_id=oa_toot["id"])
             self.logger.info(f'Replied: "{quote}" ({title}, toot length: {len(toot)})')
 
-        elif action == "oa_stream":
-            # TODO: open stream and wait for mentions
-            # on mention: get toot content and encode it to orthographe d'apparat
-            # post toot in reply to toot with mention
-            pass
+        elif action == "oa_stream_user":
+            # open stream and wait for user event
+            listener = PataphysicsStreamListener(self.mastodon)
+            self.mastodon.stream_user(listener, run_async=False)
+
+        elif action == "oa_stream_hash":
+            # open stream and wait for hashtags event
+            listener = PataphysicsStreamListener(self.mastodon)
+            self.mastodon.stream_hashtag(
+                "OrthographeApparat", listener, run_async=False
+            )
 
         elif action == "autotest":
             # dummy method to launch many encodings and detects potential missing phonems
@@ -119,71 +214,13 @@ class PataphysicsBotBeing(SuperBotBeing):
         else:
             # no specific action -> encode action text to orthographe d'apparat
             text = action
-            oa_encoded = self.encode_orthographe_d_apparat(text)
+            oa_encoded = encode_orthographe_d_apparat(text)
             self.logger.info(text)
             self.logger.info(oa_encoded)
 
-    def encode_orthographe_d_apparat(self, text: str) -> str:
-        oa, processed = "", ""
-        phonems = lt.phonemes(text)
-        for word in phonems:
-            if isinstance(word, str):
-                self.logger.debug(
-                    f"Word is not a string and not a list of phonems: '{word}')"
-                )
-                oa += word
-                processed += word
-                continue
-            self.logger.debug(f"word: {word}")
-            for ph, char in word:
-                self.logger.debug(f"Processing phonem '{ph}' for '{char}'")
-                if char in ["'"]:
-                    oa += " "
-                    processed += char
-                    continue
-                oa_ph = OA_PHONEMS[ph].title() if char[0].isupper() else OA_PHONEMS[ph]
-                oa += oa_ph
-                processed += char
-                self.logger.debug(
-                    f"Phonem '{ph}' ('{char}') -> '{oa_ph}' (processed: '{processed}')"
-                )
-        return oa
-
-    def generate_oa_random_quote_toot(self) -> Tuple[str, str, str, str]:
-        quote, title = self.random_quote()
-        encoded = self.encode_orthographe_d_apparat(quote)
-        toot = f"""\"{encoded}\"
-
-({title})"""
-        return title, quote, encoded, toot
-
-    @staticmethod
-    def quote_of_the_day(lang: str = DEFAULT_LANGUAGE) -> str:
-        return wikiquote.qotd(lang=lang)
-
-    @staticmethod
-    def random_quote_from(
-        title: str, max_quotes: int = DEFAULT_MAX_QUOTES, lang: str = DEFAULT_LANGUAGE
-    ) -> str:
-        quotes = wikiquote.quotes(title, max_quotes=max_quotes, lang=lang)
-        return random.choice(quotes)
-
-    @staticmethod
-    def random_quote(
-        max: int = DEFAULT_MAX_QUOTES, lang: str = DEFAULT_LANGUAGE
-    ) -> Tuple[str, str]:
-        titles = wikiquote.random_titles(max_titles=max, lang=lang)
-        if len(titles) == 0:
-            return PataphysicsBotBeing.random_quote(max, lang)
-        title = random.choice(titles)
-        quotes = wikiquote.quotes(title, max_quotes=max, lang=lang)
-        if len(quotes) == 0:
-            return PataphysicsBotBeing.random_quote(max, lang)
-        return random.choice(quotes), title
-
     def _autotest(self, total: int = 100) -> None:
         assert (
-            self.encode_orthographe_d_apparat("Projet d'Orthographe d'apparat")
+            encode_orthographe_d_apparat("Projet d'Orthographe d'apparat")
             == "Brrhüsgë gd Ürrhghtücrrhigtph gd igtbigtrrhigt"
         )
 
@@ -194,7 +231,7 @@ class PataphysicsBotBeing(SuperBotBeing):
         nb_ok, nb_err, exceptions = 0, 0, []
         for _ in range(total):
             try:
-                self.generate_oa_random_quote_toot()
+                generate_oa_random_quote_toot()
                 nb_ok += 1
             except Exception as exc:
                 nb_err += 1
