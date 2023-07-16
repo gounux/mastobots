@@ -10,6 +10,8 @@ python = "^3.10"
 mastodon-py = "^1.8.0"
 pyyaml = "^6.0"
 colorlog = "^6.7.0"
+pylirecouleur = "^0.0.5"
+wikiquote = "^0.1.16"
 
 
 [tool.poetry.group.dev.dependencies]
