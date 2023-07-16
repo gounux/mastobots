@@ -84,3 +84,10 @@ bots:
         api:
             api_base_url: https://mastodon.instance/
             access_token: secret_access_token
+
+    # Argument d'autorité bot
+    argument_autorité:
+        # Mastodon API connection settings
+        api:
+            api_base_url: https://mastodon.instance/
+            access_token: secret_access_token

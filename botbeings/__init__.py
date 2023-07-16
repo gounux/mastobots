@@ -4,6 +4,7 @@ from typing import Any, Dict
 
 from mastodon import Mastodon
 
+MAX_TOOT_LENGTH = 500
 TIMELINE_LIMIT = 20
 
 
