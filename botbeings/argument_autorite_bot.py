@@ -23,7 +23,6 @@ AUTORITIES = [
     "Une membre du gouvernement souhaitant garder l'anonymat",
     "Une membre de l'opposition",
     "Une membre de l'opposition souhaitant garder l'anonymat",
-    "Une lanceuse d'alerte",
 ]
 
 VERBS = [
