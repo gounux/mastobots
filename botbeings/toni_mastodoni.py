@@ -1,9 +1,6 @@
 import random
-from random import randint
 
-from botbeings import SuperBotBeing
-
-MAX_TOOT_LENGTH = 500
+from botbeings import MAX_TOOT_LENGTH, SuperBotBeing
 
 RECIPIENTS = [
     "Jimmy",
@@ -40,7 +37,7 @@ APOSTROPHES = [
     "Yeah {name}, you're always fuckin' late.",
     "No more shines, {name}.",
     "Relax {name}, will ya ?",
-    "I wanna tell ya one thing, {name}",
+    "I wanna tell ya one thing, {name}.",
     "Hey {name}, I'm talkin to {mobster} right now.",
     "Hey {name}, stop being a prick, will ya ?",
 ]
@@ -156,7 +153,7 @@ ENDS = [
     "Come on. Make that coffee to go. Let's go.",
     "I'm sorry {name}, I didn't mean to offend you.",
     "I'm only kidding with you, we're having a party.",
-    "I'm kidding, {name}",
+    "I'm kidding, {name}.",
     "You, you fucking piece of shit !",
     "Yeah, yeah, come an, come an !",
     "Come an.",

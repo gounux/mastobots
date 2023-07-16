@@ -1,9 +1,7 @@
 import random
 from typing import Tuple
 
-from botbeings import SuperBotBeing
-
-MAX_TOOT_LENGTH = 500
+from botbeings import MAX_TOOT_LENGTH, SuperBotBeing
 
 ACTIONS = [
     "is looking for a new",
