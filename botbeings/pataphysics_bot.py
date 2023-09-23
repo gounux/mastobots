@@ -8,7 +8,6 @@ from mastodon import Mastodon, StreamListener
 from wikiquote.constants import DEFAULT_MAX_QUOTES
 
 from botbeings import SuperBotBeing
-from botbeings.jobs_bot import MAX_TOOT_LENGTH
 
 LOGGER = logging.getLogger()
 DEFAULT_LANGUAGE = "fr"
@@ -121,12 +120,14 @@ def encode_orthographe_d_apparat(text: str) -> str:
     return oa
 
 
-def generate_oa_random_quote_toot() -> Tuple[str, str, str, str]:
+def generate_oa_random_quote_toot(max_length: int) -> Tuple[str, str, str, str]:
     quote, title = random_quote()
     encoded = encode_orthographe_d_apparat(quote)
     toot = f"""💡 \"{encoded}\"
 
 ({title})"""
+    if len(toot) > max_length or len(quote) > max_length - 4:
+        return generate_oa_random_quote_toot(max_length)
     return title, quote, encoded, toot
 
 
@@ -164,21 +165,19 @@ class PataphysicsStreamListener(StreamListener):
     def __init__(
         self,
         mastodon: Mastodon,
+        max_toot_length: int,
         encoder: Callable[[str], str] = encode_orthographe_d_apparat,
         quote_fetcher: Callable[[int, str], Tuple[str, str]] = random_quote,
     ):
         self.mastodon = mastodon
+        self.max_toot_length = max_toot_length
         self.encoder = encoder
         self.quote_fetcher = quote_fetcher
 
     def on_update(self, status) -> None:
         sender = status.account
         LOGGER.info(f"Toot update from '{sender.acct}': '{status.content}'")
-
-        _, quote, _, toot = generate_oa_random_quote_toot()
-        while len(toot) >= MAX_TOOT_LENGTH or len(quote) >= MAX_TOOT_LENGTH - 4:
-            _, quote, _, toot = generate_oa_random_quote_toot()
-
+        _, quote, _, toot = generate_oa_random_quote_toot(self.max_toot_length)
         reply_toot = self.mastodon.status_post(toot, in_reply_to_id=status.id)
         self.mastodon.status_post(f'👉 "{quote}"', in_reply_to_id=reply_toot.id)
 
@@ -187,9 +186,7 @@ class PataphysicsBotBeing(SuperBotBeing):
     def run(self, action: str = "default") -> None:
         if action == "oa_quote":
             # fetch a quote from wikiquote, encode it into orthographe d'apparat, toot it and reply with original
-            title, quote, oa, toot = generate_oa_random_quote_toot()
-            while len(toot) >= MAX_TOOT_LENGTH or len(quote) >= MAX_TOOT_LENGTH - 4:
-                title, quote, oa, toot = generate_oa_random_quote_toot()
+            title, quote, oa, toot = generate_oa_random_quote_toot(self.max_toot_length)
             oa_toot = self.mastodon.status_post(toot)
             self.logger.info(f'Tooted: "{oa}" ({title}, toot length: {len(toot)})')
             self.mastodon.status_post(f'👉 "{quote}"', in_reply_to_id=oa_toot["id"])
@@ -197,12 +194,12 @@ class PataphysicsBotBeing(SuperBotBeing):
 
         elif action == "oa_stream_user":
             # open stream and wait for user event
-            listener = PataphysicsStreamListener(self.mastodon)
+            listener = PataphysicsStreamListener(self.mastodon, self.max_toot_length)
             self.mastodon.stream_user(listener, run_async=False)
 
         elif action == "oa_stream_hash":
             # open stream and wait for hashtags event
-            listener = PataphysicsStreamListener(self.mastodon)
+            listener = PataphysicsStreamListener(self.mastodon, self.max_toot_length)
             self.mastodon.stream_hashtag(
                 "OrthographeApparat", listener, run_async=False
             )
@@ -231,7 +228,7 @@ class PataphysicsBotBeing(SuperBotBeing):
         nb_ok, nb_err, exceptions = 0, 0, []
         for _ in range(total):
             try:
-                generate_oa_random_quote_toot()
+                generate_oa_random_quote_toot(self.max_toot_length)
                 nb_ok += 1
             except Exception as exc:
                 nb_err += 1

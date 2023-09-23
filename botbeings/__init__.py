@@ -4,8 +4,8 @@ from typing import Any, Dict
 
 from mastodon import Mastodon
 
-MAX_TOOT_LENGTH = 500
 TIMELINE_LIMIT = 20
+MAX_TOOT_LENGTH = 500
 
 
 class SuperBotBeing(ABC):
@@ -18,6 +18,7 @@ class SuperBotBeing(ABC):
     interact_with_human: bool
     interact_with_bots: bool
     fetch_timeline_limit: int
+    max_toot_length: int
     config: Dict[str, Any]
     logger = logging.getLogger()
 
@@ -26,6 +27,7 @@ class SuperBotBeing(ABC):
         self.interact_with_human = config.get("interact_with_human", False)
         self.interact_with_bots = config.get("interact_with_bots", True)
         self.fetch_timeline_limit = config.get("fetch_timeline_limit", TIMELINE_LIMIT)
+        self.max_toot_length = config.get("max_toot_length", MAX_TOOT_LENGTH)
         self.config = config
         self.me = self.mastodon.me()
 

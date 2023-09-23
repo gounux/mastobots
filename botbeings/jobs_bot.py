@@ -1,7 +1,7 @@
 import random
 from typing import Tuple
 
-from botbeings import MAX_TOOT_LENGTH, SuperBotBeing
+from botbeings import SuperBotBeing
 
 ACTIONS = [
     "is looking for a new",
@@ -671,17 +671,15 @@ TOOT_TEMPLATE = """📢 {initials} ({company}) {action} {jobtitle} !
 
 class JobsBotBeing(SuperBotBeing):
     def run(self, action: str = "default") -> None:
-        toot = self.generate_toot()
-        while len(toot) > MAX_TOOT_LENGTH:
-            toot = self.generate_toot()
+        toot = self.generate_toot(self.max_toot_length)
         self.mastodon.status_post(toot)
         self.logger.info(f'Tooted: "{toot}" (length: {len(toot)})')
 
-    def generate_toot(self) -> str:
+    def generate_toot(self, max_length: int) -> str:
         company, initials = self.generate_company()
         jobtitle = self.generate_jobtitle()
 
-        return TOOT_TEMPLATE.format(
+        toot = TOOT_TEMPLATE.format(
             initials=initials,
             company=company,
             action=random.choice(ACTIONS),
@@ -697,6 +695,9 @@ class JobsBotBeing(SuperBotBeing):
             domain=initials.lower().replace(" ", "-"),
             maildomain=random.choice(MAIL_DOMAINS),
         )
+        if len(toot) > max_length:
+            return self.generate_toot(max_length)
+        return toot
 
     @staticmethod
     def generate_company() -> Tuple[str, str]:

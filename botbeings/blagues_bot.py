@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict
 
 import requests
 from requests import Response
@@ -17,7 +17,7 @@ class BlaguesBotBeing(SuperBotBeing):
 
     def run(self, action: str = "default") -> None:
         blague = self.fetch_random_blague()
-        cat, joke, answer = blague["type"], blague["joke"], blague["answer"]
+        _, joke, answer = blague["type"], blague["joke"], blague["answer"]
         content = f"{joke}\n\n{answer}"
         self.mastodon.status_post(content, spoiler_text=joke)
         self.logger.info(f"Tooted: {joke} {answer} (length: {len(content)})")

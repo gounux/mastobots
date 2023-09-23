@@ -1,6 +1,6 @@
 import random
 
-from botbeings import MAX_TOOT_LENGTH, SuperBotBeing
+from botbeings import SuperBotBeing
 
 AUTORITIES = [
     "84% des dermatologues",
@@ -100,16 +100,18 @@ TOOT_TEMPLATE = "️☝️ {autority} {verb} {subject} {action}."
 
 class ArgumentDAutoriteBotBeing(SuperBotBeing):
     def run(self, action: str = "default") -> None:
-        toot = self.generate_toot()
-        while len(toot) > MAX_TOOT_LENGTH:
-            toot = self.generate_toot()
+        toot = self.generate_toot(self.max_toot_length)
         self.mastodon.status_post(toot)
         self.logger.info(f'Tooted: "{toot}" (length: {len(toot)})')
 
-    def generate_toot(self) -> str:
-        return TOOT_TEMPLATE.format(
+    @staticmethod
+    def generate_toot(max_length: int) -> str:
+        toot = TOOT_TEMPLATE.format(
             autority=random.choice(AUTORITIES),
             verb=random.choice(VERBS),
             subject=random.choice(SUBJECTS),
             action=random.choice(ACTION),
         )
+        if len(toot) > max_length:
+            return ArgumentDAutoriteBotBeing.generate_toot(max_length)
+        return toot

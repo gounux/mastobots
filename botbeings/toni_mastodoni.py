@@ -1,6 +1,6 @@
 import random
 
-from botbeings import MAX_TOOT_LENGTH, SuperBotBeing
+from botbeings import SuperBotBeing
 
 RECIPIENTS = [
     "Jimmy",
@@ -170,7 +170,7 @@ class ToniMastodoni(SuperBotBeing):
             self.toot()
 
     @staticmethod
-    def generate_toot(recipient: str, nbq: int, nba: int) -> str:
+    def generate_toot(recipient: str, nbq: int, nba: int, max_length: int) -> str:
         if recipient in RECIPIENTS:
             RECIPIENTS.remove(recipient)
         mobster = random.choice(RECIPIENTS)
@@ -179,7 +179,10 @@ class ToniMastodoni(SuperBotBeing):
         affirmations = random.sample(AFFIRMATIONS, k=nba)
         end = random.choice(ENDS)
         content = f"{apostrophe} {' '.join(questions)} {' '.join(affirmations)} {end}"
-        return content.format(name=recipient, mobster=mobster)
+        toot = content.format(name=recipient, mobster=mobster)
+        if len(toot) > max_length:
+            return ToniMastodoni.generate_toot(recipient, nbq, nba, max_length)
+        return toot
 
     def toot(self) -> None:
         recipient = random.choice(RECIPIENTS)
@@ -188,10 +191,10 @@ class ToniMastodoni(SuperBotBeing):
         nb_affirmations = nb_elements - nb_questions
 
         self.logger.debug(
-            f"Generating toot with {nb_questions} questions and {nb_affirmations} affirmations"
+            f"Generating toot ({nb_questions} questions + {nb_affirmations} affirmations)"
         )
-        toot = self.generate_toot(recipient, nb_questions, nb_affirmations)
-        while len(toot) >= MAX_TOOT_LENGTH:
-            toot = self.generate_toot(recipient, nb_questions, nb_affirmations)
+        toot = self.generate_toot(
+            recipient, nb_questions, nb_affirmations, self.max_toot_length
+        )
         self.mastodon.status_post(toot)
         self.logger.info(f'Tooted: "{toot}" (length: {len(toot)})')
