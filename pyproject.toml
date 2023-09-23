@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mastobots"
-version = "0.2.0"
+version = "0.3.0"
 description = "Various and diverse bots in the fediverse using mastodon API"
 authors = ["Guilhem Allaman <contact@guilhemallaman.net>"]
 readme = "README.md"
