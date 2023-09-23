@@ -19,7 +19,8 @@ class BlaguesBotBeing(SuperBotBeing):
         blague = self.fetch_random_blague()
         _, joke, answer = blague["type"], blague["joke"], blague["answer"]
         content = f"{joke}\n\n{answer}"
-        self.mastodon.status_post(content, spoiler_text=joke)
+        if not self.dryrun:
+            self.mastodon.status_post(content, spoiler_text=joke)
         self.logger.info(f"Tooted: {joke} {answer} (length: {len(content)})")
 
     def fetch_random_blague(self) -> Dict[str, Any]:

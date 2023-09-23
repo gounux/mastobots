@@ -101,7 +101,8 @@ TOOT_TEMPLATE = "️☝️ {autority} {verb} {subject} {action}."
 class ArgumentDAutoriteBotBeing(SuperBotBeing):
     def run(self, action: str = "default") -> None:
         toot = self.generate_toot(self.max_toot_length)
-        self.mastodon.status_post(toot)
+        if not self.dryrun:
+            self.mastodon.status_post(toot)
         self.logger.info(f'Tooted: "{toot}" (length: {len(toot)})')
 
     @staticmethod

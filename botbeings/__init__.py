@@ -23,13 +23,15 @@ class SuperBotBeing(ABC):
     logger = logging.getLogger()
 
     def __init__(self, config: Dict[str, Any]):
-        self.mastodon = Mastodon(**config.get("api"))
+        self.dryrun = config.get("dryrun", False)
         self.interact_with_human = config.get("interact_with_human", False)
         self.interact_with_bots = config.get("interact_with_bots", True)
         self.fetch_timeline_limit = config.get("fetch_timeline_limit", TIMELINE_LIMIT)
         self.max_toot_length = config.get("max_toot_length", MAX_TOOT_LENGTH)
         self.config = config
-        self.me = self.mastodon.me()
+        if not self.dryrun:
+            self.mastodon = Mastodon(**config.get("api"))
+            self.me = self.mastodon.me()
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__}>"

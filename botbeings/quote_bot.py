@@ -13,7 +13,8 @@ class QuoteBotBeing(SuperBotBeing):
         if action == "default":
             quote, author = self.fetch_random_quote()
             content = f'"{quote}"\n\n- {author} -'
-            self.mastodon.status_post(content)
+            if not self.dryrun:
+                self.mastodon.status_post(content)
             self.logger.info(f'Tooted: "{quote}" -{author}- (length: {len(content)})')
 
     @staticmethod
