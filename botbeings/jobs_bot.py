@@ -672,7 +672,8 @@ TOOT_TEMPLATE = """📢 {initials} ({company}) {action} {jobtitle} !
 class JobsBotBeing(SuperBotBeing):
     def run(self, action: str = "default") -> None:
         toot = self.generate_toot(self.max_toot_length)
-        self.mastodon.status_post(toot)
+        if not self.dryrun:
+            self.mastodon.status_post(toot)
         self.logger.info(f'Tooted: "{toot}" (length: {len(toot)})')
 
     def generate_toot(self, max_length: int) -> str:

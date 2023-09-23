@@ -187,22 +187,29 @@ class PataphysicsBotBeing(SuperBotBeing):
         if action == "oa_quote":
             # fetch a quote from wikiquote, encode it into orthographe d'apparat, toot it and reply with original
             title, quote, oa, toot = generate_oa_random_quote_toot(self.max_toot_length)
-            oa_toot = self.mastodon.status_post(toot)
+            if not self.dryrun:
+                oa_toot = self.mastodon.status_post(toot)
+                self.mastodon.status_post(f'👉 "{quote}"', in_reply_to_id=oa_toot["id"])
             self.logger.info(f'Tooted: "{oa}" ({title}, toot length: {len(toot)})')
-            self.mastodon.status_post(f'👉 "{quote}"', in_reply_to_id=oa_toot["id"])
             self.logger.info(f'Replied: "{quote}" ({title}, toot length: {len(toot)})')
 
         elif action == "oa_stream_user":
             # open stream and wait for user event
-            listener = PataphysicsStreamListener(self.mastodon, self.max_toot_length)
-            self.mastodon.stream_user(listener, run_async=False)
+            if not self.dryrun:
+                listener = PataphysicsStreamListener(
+                    self.mastodon, self.max_toot_length
+                )
+                self.mastodon.stream_user(listener, run_async=False)
 
         elif action == "oa_stream_hash":
             # open stream and wait for hashtags event
-            listener = PataphysicsStreamListener(self.mastodon, self.max_toot_length)
-            self.mastodon.stream_hashtag(
-                "OrthographeApparat", listener, run_async=False
-            )
+            if not self.dryrun:
+                listener = PataphysicsStreamListener(
+                    self.mastodon, self.max_toot_length
+                )
+                self.mastodon.stream_hashtag(
+                    "OrthographeApparat", listener, run_async=False
+                )
 
         elif action == "autotest":
             # dummy method to launch many encodings and detects potential missing phonems

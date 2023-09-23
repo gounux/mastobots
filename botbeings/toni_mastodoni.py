@@ -196,5 +196,6 @@ class ToniMastodoni(SuperBotBeing):
         toot = self.generate_toot(
             recipient, nb_questions, nb_affirmations, self.max_toot_length
         )
-        self.mastodon.status_post(toot)
+        if not self.dryrun:
+            self.mastodon.status_post(toot)
         self.logger.info(f'Tooted: "{toot}" (length: {len(toot)})')

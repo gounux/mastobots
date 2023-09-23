@@ -36,6 +36,13 @@ def arguments() -> Namespace:
         "-a", "--action", default="default", help="Bot's action to trigger"
     )
     parser.add_argument(
+        "-d",
+        "--dryrun",
+        action="store_true",
+        default=False,
+        help="Dry run (no mastodon interaction)",
+    )
+    parser.add_argument(
         "-v", "--verbose", action="store_true", default=False, help="Verbose output"
     )
     return parser.parse_args()
@@ -52,6 +59,7 @@ if __name__ == "__main__":
     logging.debug(f"Parsing bots configuration YAML file at {args.config}")
     with open(args.config) as f:
         config = yaml.load(f, Loader=SafeLoader)
+        config["dryrun"] = args.dryrun
 
         try:
             logging.debug(f"Creating botbeing with power '{args.power}'")
