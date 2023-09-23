@@ -7,6 +7,10 @@ class FollowBotBeing(SuperBotBeing):
     nb_follows: int = 0
 
     def run(self, action: str = "default") -> None:
+        if self.dryrun:
+            self.logger.warning("Can not run in dryrun mode")
+            return
+
         # fetch some toots
         timeline = self.mastodon.timeline_public(limit=self.fetch_timeline_limit)
 
