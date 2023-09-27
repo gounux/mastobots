@@ -18,8 +18,7 @@ class QuoteBotBeing(SuperBotBeing):
                 self.mastodon.status_post(content)
             self.logger.info(f'Tooted: "{quote}" -{author}- (length: {len(content)})')
         elif action == "wikiquote":
-            quote, title = random_wikiquote(lang="en")
-            content = f'"{quote}"\n\n- {title} -'
+            quote, title, content = self.fetch_random_wikiquote("en")
             if not self.dryrun:
                 self.mastodon.status_post(content)
             self.logger.info(f'Tooted: "{quote}" -{title}- (length: {len(content)})')
@@ -31,3 +30,10 @@ class QuoteBotBeing(SuperBotBeing):
         assert r.status_code == 200
         quote = r.json()
         return quote["content"], quote["author"]
+
+    def fetch_random_wikiquote(self, lang: str) -> Tuple[str, str, str]:
+        quote, title = random_wikiquote(lang=lang)
+        content = f'"{quote}"\n\n- {title} -'
+        if len(content) >= self.max_toot_length:
+            return self.fetch_random_wikiquote(lang)
+        return quote, title, content
