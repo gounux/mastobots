@@ -121,7 +121,7 @@ def encode_orthographe_d_apparat(text: str) -> str:
 
 
 def generate_oa_random_quote_toot(max_length: int) -> Tuple[str, str, str, str]:
-    quote, title = random_quote()
+    quote, title = random_wikiquote()
     encoded = encode_orthographe_d_apparat(quote)
     toot = f"""💡 \"{encoded}\"
 
@@ -145,16 +145,16 @@ def random_quote_from(
     return random.choice(quotes)
 
 
-def random_quote(
+def random_wikiquote(
     max: int = DEFAULT_MAX_QUOTES, lang: str = DEFAULT_LANGUAGE
 ) -> Tuple[str, str]:
     titles = wikiquote.random_titles(max_titles=max, lang=lang)
     if len(titles) == 0:
-        return random_quote(max, lang)
+        return random_wikiquote(max, lang)
     title = random.choice(titles)
     quotes = wikiquote.quotes(title, max_quotes=max, lang=lang)
     if len(quotes) == 0:
-        return random_quote(max, lang)
+        return random_wikiquote(max, lang)
     return random.choice(quotes), title
 
 
@@ -167,7 +167,7 @@ class PataphysicsStreamListener(StreamListener):
         mastodon: Mastodon,
         max_toot_length: int,
         encoder: Callable[[str], str] = encode_orthographe_d_apparat,
-        quote_fetcher: Callable[[int, str], Tuple[str, str]] = random_quote,
+        quote_fetcher: Callable[[int, str], Tuple[str, str]] = random_wikiquote,
     ):
         self.mastodon = mastodon
         self.max_toot_length = max_toot_length
